@@ -53,10 +53,7 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-brand-light p-8 text-brand-text font-sans">
       <header className="mb-8 flex flex-col md:flex-row md:justify-between md:items-center bg-brand-dark text-white p-6 rounded-lg shadow-lg">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">OpenCutList Web</h1>
-          <p className="text-gray-300 opacity-90">Free, open source cut list optimizer</p>
-        </div>
+
         <div className="mt-4 md:mt-0 flex flex-wrap items-center justify-center md:justify-end gap-3">
           {/* Handle Kerf Display/Input */}
           <div className="flex items-center space-x-2 bg-brand-text/10 p-1 rounded-md border border-white/20">
