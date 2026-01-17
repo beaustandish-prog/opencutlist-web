@@ -64,13 +64,22 @@ function AppContent() {
             <label className="text-sm font-medium text-gray-200 pl-2">Kerf:</label>
             <input
               type="number"
-              step={state.settings.unit === 'mm' ? "0.1" : "0.001"}
+              step={state.settings.unit === 'inch' ? "0.001" : "0.1"}
               className="w-20 text-sm bg-brand-dark border-gray-600 rounded text-white focus:ring-brand-primary focus:border-brand-primary"
-              value={state.settings.unit === 'mm' ? state.settings.kerf : (state.settings.kerf / 25.4).toFixed(3)}
+              value={
+                state.settings.unit === 'inch'
+                  ? (state.settings.kerf / 25.4).toFixed(3)
+                  : state.settings.unit === 'cm'
+                    ? (state.settings.kerf / 10).toFixed(2)
+                    : state.settings.kerf
+              }
               onChange={(e) => {
                 const val = parseFloat(e.target.value);
                 if (!isNaN(val)) {
-                  const mmValue = state.settings.unit === 'mm' ? val : val * 25.4;
+                  let mmValue = val;
+                  if (state.settings.unit === 'inch') mmValue = val * 25.4;
+                  else if (state.settings.unit === 'cm') mmValue = val * 10;
+
                   dispatch({ type: 'SET_KERF', payload: mmValue });
                 }
               }}
@@ -83,6 +92,12 @@ function AppContent() {
               className={`px-3 py-1 text-sm font-medium rounded transition-colors ${state.settings.unit === 'inch' ? 'bg-green-600 text-white shadow' : 'text-gray-400 hover:text-white'}`}
             >
               Inch
+            </button>
+            <button
+              onClick={() => dispatch({ type: 'SET_UNIT', payload: 'cm' })}
+              className={`px-3 py-1 text-sm font-medium rounded transition-colors ${state.settings.unit === 'cm' ? 'bg-green-600 text-white shadow' : 'text-gray-400 hover:text-white'}`}
+            >
+              CM
             </button>
             <button
               onClick={() => dispatch({ type: 'SET_UNIT', payload: 'mm' })}

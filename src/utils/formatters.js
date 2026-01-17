@@ -44,6 +44,9 @@ export const formatDimension = (valueMM, targetUnit) => {
         // Convert MM to Inch
         const inches = mm / 25.4;
         return toFraction(inches);
+    } else if (targetUnit === 'cm') {
+        const cm = mm / 10;
+        return Number.isInteger(cm) ? cm.toString() : cm.toFixed(2);
     } else {
         // MM
         return Number.isInteger(mm) ? mm.toString() : mm.toFixed(1);

@@ -18,13 +18,16 @@ export default function StockInput() {
 
     useEffect(() => {
         if (state.editingStock) {
-            const isMetric = state.settings.unit === 'mm';
-            const factor = isMetric ? 1 : 1 / 25.4;
+            const isMetric = state.settings.unit === 'mm' || state.settings.unit === 'cm';
+            let factor = 1;
+            if (state.settings.unit === 'inch') factor = 1 / 25.4;
+            else if (state.settings.unit === 'cm') factor = 0.1;
+
             setStock({
                 ...state.editingStock,
-                length: (state.editingStock.length * factor).toFixed(isMetric ? 1 : 3),
-                width: (state.editingStock.width * factor).toFixed(isMetric ? 1 : 3),
-                thickness: (state.editingStock.thickness * factor).toFixed(isMetric ? 1 : 3),
+                length: (state.editingStock.length * factor).toFixed(state.settings.unit === 'inch' ? 3 : (state.settings.unit === 'cm' ? 2 : 1)),
+                width: (state.editingStock.width * factor).toFixed(state.settings.unit === 'inch' ? 3 : (state.settings.unit === 'cm' ? 2 : 1)),
+                thickness: (state.editingStock.thickness * factor).toFixed(state.settings.unit === 'inch' ? 3 : (state.settings.unit === 'cm' ? 2 : 1)),
                 material: state.editingStock.material || '',
                 cost: state.editingStock.cost || ''
             });
@@ -51,8 +54,9 @@ export default function StockInput() {
             return;
         }
 
-        const isMetric = state.settings.unit === 'mm';
-        const factor = isMetric ? 1 : 25.4; // If inch, multiply by 25.4 to get mm
+        let factor = 1;
+        if (state.settings.unit === 'inch') factor = 25.4;
+        else if (state.settings.unit === 'cm') factor = 10;
 
         const payload = {
             ...stock,
