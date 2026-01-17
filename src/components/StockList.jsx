@@ -17,7 +17,7 @@ export default function StockList() {
                             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Dimensions ({state.settings.unit})</th>
                             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Qty</th>
                             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Material</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Cost</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Total Cost</th>
                             <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
@@ -33,7 +33,7 @@ export default function StockList() {
                                     {item.material || 'Unknown'}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {item.cost ? `$${parseFloat(item.cost).toFixed(2)}` : '-'}
+                                    {item.cost ? `$${(parseFloat(item.cost) * item.quantity).toFixed(2)}` : '-'}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
                                     <button
