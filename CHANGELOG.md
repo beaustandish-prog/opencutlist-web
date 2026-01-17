@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2026-01-17
+### Added
+- Added Pricing Model Selector to Stock Input (Cost per Item, Linear Foot, or Board Foot).
+
 ## [1.1.0] - 2026-01-17
 ### Added
 - Created CHANGELOG.md to track project history.

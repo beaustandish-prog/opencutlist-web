@@ -11,7 +11,8 @@ export default function StockInput() {
         thickness: '',
         quantity: 1,
         material: '',
-        cost: ''
+        cost: '',
+        pricingModel: 'item' // 'item', 'lf', 'bf'
     });
 
     const [showSuccess, setShowSuccess] = useState(false);
@@ -29,7 +30,8 @@ export default function StockInput() {
                 width: (state.editingStock.width * factor).toFixed(state.settings.unit === 'inch' ? 3 : (state.settings.unit === 'cm' ? 2 : 1)),
                 thickness: (state.editingStock.thickness * factor).toFixed(state.settings.unit === 'inch' ? 3 : (state.settings.unit === 'cm' ? 2 : 1)),
                 material: state.editingStock.material || '',
-                cost: state.editingStock.cost || ''
+                cost: state.editingStock.cost || '',
+                pricingModel: 'item' // When editing, default back to item price since we don't store the model separately
             });
         } else if (state.stock.length === 0) {
             // "Clear All" was likely pressed, reset form including sticky fields
@@ -40,7 +42,8 @@ export default function StockInput() {
                 thickness: '',
                 quantity: 1,
                 material: '',
-                cost: ''
+                cost: '',
+                pricingModel: 'item'
             });
         }
     }, [state.editingStock, state.settings.unit, (state.stock || []).length]);
@@ -66,8 +69,33 @@ export default function StockInput() {
             width: parseFloat(stock.width) * factor,
             thickness: parseFloat(stock.thickness) * factor,
             quantity: parseInt(stock.quantity),
-            cost: parseFloat(stock.cost) || 0
+            cost: 0
         };
+
+        // Calculate Cost per Item based on Pricing Model
+        const enteredCost = parseFloat(stock.cost) || 0;
+
+        if (stock.pricingModel === 'item') {
+            payload.cost = enteredCost;
+        } else {
+            // Normalize dimensions to inches for LF/BF calculation
+            // If current unit is mm: / 25.4
+            // If current unit is cm: / 2.54
+            // If current unit is inch: / 1
+            const toInch = state.settings.unit === 'mm' ? 1 / 25.4 : (state.settings.unit === 'cm' ? 1 / 2.54 : 1);
+
+            const lenIn = parseFloat(stock.length) * toInch;
+            const widIn = parseFloat(stock.width) * toInch;
+            const thkIn = parseFloat(stock.thickness) * toInch;
+
+            if (stock.pricingModel === 'lf') {
+                // Cost = (Length_in / 12) * Price
+                payload.cost = (lenIn / 12) * enteredCost;
+            } else if (stock.pricingModel === 'bf') {
+                // Cost = ((T_in * W_in * L_in) / 144) * Price
+                payload.cost = ((thkIn * widIn * lenIn) / 144) * enteredCost;
+            }
+        }
 
         if (state.editingStock) {
             dispatch({ type: 'UPDATE_STOCK', payload });
@@ -78,12 +106,12 @@ export default function StockInput() {
             setTimeout(() => setShowSuccess(false), 5000);
         }
 
-        setStock({ name: '', length: '', width: '', thickness: '', quantity: 1, material: stock.material, cost: stock.cost });
+        setStock({ name: '', length: '', width: '', thickness: '', quantity: 1, material: stock.material, cost: stock.cost, pricingModel: stock.pricingModel });
     };
 
     const handleCancel = () => {
         dispatch({ type: 'CANCEL_EDIT_STOCK' });
-        setStock({ name: '', length: '', width: '', thickness: '', quantity: 1, material: stock.material, cost: '' });
+        setStock({ name: '', length: '', width: '', thickness: '', quantity: 1, material: stock.material, cost: '', pricingModel: 'item' });
     };
 
     return (
@@ -159,8 +187,24 @@ export default function StockInput() {
                         placeholder="e.g. Plywood"
                     />
                 </div>
+
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Cost (Each)</label>
+                    <label className="block text-sm font-medium text-gray-700">Pricing Model</label>
+                    <select
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-primary focus:ring-brand-primary sm:text-sm border p-2"
+                        value={stock.pricingModel}
+                        onChange={e => setStock({ ...stock, pricingModel: e.target.value })}
+                    >
+                        <option value="item">Per Item</option>
+                        <option value="lf">Per Linear Foot</option>
+                        <option value="bf">Per Board Foot</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                        {stock.pricingModel === 'item' ? 'Cost (Each)' : (stock.pricingModel === 'lf' ? 'Price / LF' : 'Price / BF')}
+                    </label>
                     <div className="relative mt-1 rounded-md shadow-sm">
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                             <span className="text-gray-500 sm:text-sm">$</span>
@@ -193,7 +237,7 @@ export default function StockInput() {
                         </button>
                     )}
                 </div>
-            </form>
+            </form >
             {showSuccess && (
                 <div className="fixed top-20 right-4 z-50 w-full max-w-md animate-bounce-in">
                     <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-2xl mx-4 md:mx-0 flex items-start">
@@ -220,7 +264,8 @@ export default function StockInput() {
                         </div>
                     </div>
                 </div>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 }
