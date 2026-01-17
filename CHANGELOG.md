@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-01-17
+### Added
+- Added 'CM' (centimeters) as a supported measurement unit.
+- Added unit toggle for Inch/CM/MM in the header.
+
+### Fixed
+- Fixed Vite development server file locking issues (EBUSY) on Windows/Dropbox by relocating the cache to the system temp directory.
 ## [1.1.0] - 2026-01-17
 ### Added
 - Created CHANGELOG.md to track project history.
