@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Fixed Vite development server file locking issues (EBUSY) on Windows/Dropbox by relocating the cache to the system temp directory.
+- Fixed Stock Inventory list to display the total cost (Unit Amount * Quantity) instead of the single unit cost.
 
 
 ## [1.0.0] - 2026-01-14
