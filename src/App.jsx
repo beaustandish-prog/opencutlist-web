@@ -54,6 +54,10 @@ function AppContent() {
     <div className="min-h-screen bg-brand-light p-8 text-brand-text font-sans">
       <header className="mb-8 flex flex-col md:flex-row md:justify-between md:items-center bg-brand-dark text-white p-6 rounded-lg shadow-lg">
 
+        <div className="flex items-center">
+          <h1 className="text-2xl font-bold">Cut List 1.1</h1>
+        </div>
+
         <div className="mt-4 md:mt-0 flex flex-wrap items-center justify-center md:justify-end gap-3">
           {/* Handle Kerf Display/Input */}
           <div className="flex items-center space-x-2 bg-brand-text/10 p-1 rounded-md border border-white/20">
